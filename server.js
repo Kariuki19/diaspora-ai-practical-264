@@ -55,32 +55,93 @@ app.get('/health', (req, res) => {
 // POST route at /api/tasks
 app.post('/api/tasks', async (req, res) => {
   try {
-    const { title, description, ...otherFields } = req.body;
+    const { message } = req.body;
 
-    if (!title) {
+    if (!message || typeof message !== 'string') {
       return res.status(400).json({
         error: 'Bad Request',
-        message: 'The "title" field is required.'
+        message: 'The "message" string field is required in the request body.'
       });
     }
 
-    console.log('Received task data:', { title, description, ...otherFields });
+    if (!genAI) {
+      throw new Error('Gemini AI client is not initialized. Please verify your GEMINI_API_KEY environment variable.');
+    }
 
-    // Echo back the created task with status
-    return res.status(201).json({
-      success: true,
-      message: 'Task received successfully',
-      data: {
-        id: Math.random().toString(36).substr(2, 9), // Mock ID
-        title,
-        description,
-        ...otherFields,
-        createdAt: new Date().toISOString()
-      },
-      databaseSaved: !!supabase
+    if (!supabase) {
+      throw new Error('Supabase client is not initialized. Please verify your SUPABASE_URL and SUPABASE_KEY environment variables.');
+    }
+
+    console.log(`Processing message with Gemini AI: "${message}"`);
+
+    // Initialize Gemini model with system instruction and JSON output configuration
+    const model = genAI.getGenerativeModel({
+      model: 'gemini-1.5-flash',
+      systemInstruction: 'You are a task-processing assistant. Output ONLY valid JSON containing: "intent" (strictly one of: send_money, get_airport_transfer, hire_service, verify_document, check_status), "entities" (extracted details as key-value pairs), "steps" (array of 3 action steps), and "messages" (an object with msg_whatsapp, msg_email, and msg_sms tailored to the task).',
+      generationConfig: {
+        responseMimeType: 'application/json',
+      }
     });
+
+    // Generate content
+    const result = await model.generateContent(message);
+    const responseText = result.response.text();
+
+    console.log('Received raw response from Gemini:', responseText);
+
+    // Parse Gemini JSON output
+    let parsedData;
+    try {
+      parsedData = JSON.parse(responseText);
+    } catch (parseErr) {
+      throw new Error(`Failed to parse JSON response from Gemini AI: ${parseErr.message}. Raw text: ${responseText}`);
+    }
+
+    const intent = parsedData.intent;
+    
+    // Assign custom risk score based on the intent
+    let riskScore = 10;
+    if (intent === 'send_money') {
+      riskScore = 85;
+    } else if (intent === 'verify_document') {
+      riskScore = 60;
+    } else if (intent === 'get_airport_transfer') {
+      riskScore = 30;
+    }
+
+    console.log(`Computed risk score: ${riskScore} for intent: "${intent}"`);
+
+    // Insert task into Supabase table
+    const { data, error } = await supabase
+      .from('tasks')
+      .insert([
+        {
+          original_message: message,
+          intent: intent || 'unknown',
+          entities: parsedData.entities || {},
+          action_steps: parsedData.steps || [],
+          messages: parsedData.messages || {},
+          risk_score: riskScore
+        }
+      ])
+      .select();
+
+    if (error) {
+      console.error('Supabase insert error:', error);
+      throw new Error(`Database insertion failed: ${error.message}`);
+    }
+
+    if (!data || data.length === 0) {
+      throw new Error('Database insertion succeeded but did not return the saved record.');
+    }
+
+    console.log('Task successfully saved to Supabase:', data[0]);
+
+    // Return the fully saved database object back to the client as JSON with a 201 status code
+    return res.status(201).json(data[0]);
+
   } catch (error) {
-    console.error('Error handling /api/tasks:', error);
+    console.error('Error in /api/tasks:', error);
     return res.status(500).json({
       error: 'Internal Server Error',
       message: error.message
