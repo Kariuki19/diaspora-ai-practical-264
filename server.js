@@ -76,7 +76,7 @@ app.post('/api/tasks', async (req, res) => {
 
     // Initialize Gemini model with system instruction and JSON output configuration
     const model = genAI.getGenerativeModel({
-      model: 'gemini-1.5-flash',
+      model: 'gemini-2.5-flash',
       systemInstruction: 'You are a task-processing assistant. Output ONLY valid JSON containing: "intent" (strictly one of: send_money, get_airport_transfer, hire_service, verify_document, check_status), "entities" (extracted details as key-value pairs), "generated_steps" (array of 3 action steps), "msg_whatsapp" (string), "msg_email" (string), and "msg_sms" (string).',
       generationConfig: {
         responseMimeType: 'application/json',
