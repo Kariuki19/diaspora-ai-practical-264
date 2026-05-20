@@ -111,11 +111,17 @@ app.post('/api/tasks', async (req, res) => {
 
     console.log(`Computed risk score: ${riskScore} for intent: "${intent}"`);
 
+    // Generate unique task code
+    const task_code = 'TSK-' + Math.floor(Math.random() * 1000000);
+
+    console.log(`Generated task code: ${task_code}`);
+
     // Insert task into Supabase table mapping exactly to the database columns
     const { data, error } = await supabase
       .from('tasks')
       .insert([
         {
+          task_code,
           raw_input: message,
           intent: intent || 'unknown',
           entities: parsedData.entities || {},
