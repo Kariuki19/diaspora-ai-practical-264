@@ -16,6 +16,7 @@
 
 require('dotenv').config();
 const express = require('express');
+const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -24,6 +25,9 @@ const { GoogleGenerativeAI } = require('@google/generative-ai');
 // ----------------------------------------------------------------------------
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Enable Cross-Origin Resource Sharing (CORS) globally to allow frontend clients to fetch data.
+app.use(cors());
 
 // Middleware to parse incoming HTTP request bodies with Content-Type: application/json.
 // Without this middleware, req.body would resolve to undefined.
