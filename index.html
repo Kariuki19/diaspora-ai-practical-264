@@ -650,6 +650,102 @@
         padding-bottom: 160px;
       }
     }
+
+    /* Kenya Top Border */
+    .top-border {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(to right, #000000 0%, #000000 30%, #ffffff 30%, #ffffff 32%, #c8102e 32%, #c8102e 68%, #ffffff 68%, #ffffff 70%, #005a36 70%, #005a36 100%);
+      z-index: 100;
+    }
+
+    /* Tech Stack Badges Container */
+    .tech-stack-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tech-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.06);
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: var(--transition-smooth);
+    }
+
+    .tech-badge:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: #ffffff;
+    }
+
+    /* Sleek Glassmorphic Quick Actions Layout */
+    .quick-actions {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 36px;
+      animation: fadeIn 1s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .quick-action-card {
+      background: rgba(25, 35, 58, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      backdrop-filter: blur(10px);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .quick-action-card:hover {
+      transform: translateY(-4px);
+      background: rgba(25, 35, 58, 0.5);
+      border-color: rgba(168, 85, 247, 0.35);
+      box-shadow: 0 16px 32px -12px rgba(168, 85, 247, 0.25);
+    }
+
+    .card-icon {
+      font-size: 24px;
+      margin-bottom: 2px;
+    }
+
+    .quick-action-card h3 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: #ffffff;
+      letter-spacing: -0.2px;
+    }
+
+    .quick-action-card p {
+      font-size: 12px !important;
+      color: var(--text-secondary) !important;
+      line-height: 1.4 !important;
+      margin: 0 !important;
+    }
+
+    @media (max-width: 680px) {
+      .quick-actions {
+        grid-template-columns: 1fr;
+      }
+      .tech-badge {
+        display: none; /* Mute on mobile viewports */
+      }
+    }
   </style>
 </head>
 <body>
@@ -658,6 +754,9 @@
   <div class="glow-sphere"></div>
   <div class="glow-sphere-2"></div>
 
+  <!-- Top 3px Kenyan Flag Gradient Border -->
+  <div class="top-border"></div>
+
   <!-- Header Section -->
   <header>
     <div class="nav-container">
@@ -665,9 +764,19 @@
         <div class="logo-icon">D</div>
         <div class="logo-text">diaspora.ai</div>
       </div>
-      <div class="status-badge">
-        <div class="status-dot"></div>
-        Express Live
+      <div class="tech-stack-badges">
+        <span class="tech-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3ecf8e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Supabase
+        </span>
+        <span class="tech-badge">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#8ab4f8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"></path></svg>
+          Gemini 2.5 Flash
+        </span>
+        <div class="status-badge">
+          <div class="status-dot"></div>
+          Express Live
+        </div>
       </div>
     </div>
   </header>
@@ -679,6 +788,25 @@
     <div class="welcome-panel" id="welcome-panel">
       <h1>Diaspora AI Task Manager</h1>
       <p>Initiate transactions, verify documents, and automate correspondence instantly. Simply enter your instructions below to let Gemini 2.5 Flash structure the task.</p>
+      
+      <!-- Sleek Glassmorphic Quick Actions -->
+      <div class="quick-actions">
+        <div class="quick-action-card" onclick="autofillPrompt('Send $500 to my mom in Nairobi for her airport taxi and verify her identity card.')">
+          <span class="card-icon">💸</span>
+          <h3>M-Pesa Transfer</h3>
+          <p>Send funds home and verify recipient details</p>
+        </div>
+        <div class="quick-action-card" onclick="autofillPrompt('Please verify my passport document for the application.')">
+          <span class="card-icon">🛡️</span>
+          <h3>ArdhiSasa Verification</h3>
+          <p>Run document compliance & authenticity checks</p>
+        </div>
+        <div class="quick-action-card" onclick="autofillPrompt('I want to hire a local plumber to fix a leak in my kitchen.')">
+          <span class="card-icon">🔧</span>
+          <h3>Local Errands</h3>
+          <p>Coordinate trusted service providers locally</p>
+        </div>
+      </div>
     </div>
 
     <!-- Active Message/Response Stream -->
@@ -712,6 +840,17 @@
   <script>
     // In-memory counter for total processed tasks in current session
     let taskCounter = 0;
+
+    /**
+     * Autofills the prompt into the input box and sets focus
+     */
+    function autofillPrompt(promptText) {
+      const inputField = document.getElementById('message-input');
+      if (inputField) {
+        inputField.value = promptText;
+        inputField.focus();
+      }
+    }
 
     /**
      * Handles the task processing submission workflow
