@@ -636,6 +636,171 @@
       100% { left: 100%; }
     }
 
+    /* Dashboard Navigation Toggle Button Group */
+    .view-toggle-group {
+      display: flex;
+      background: rgba(255, 255, 255, 0.04);
+      padding: 4px;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      margin-left: auto;
+      margin-right: 16px;
+      gap: 2px;
+    }
+
+    .view-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      padding: 6px 16px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .view-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .view-btn.active {
+      background: var(--gradient-purple);
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.35);
+    }
+
+    /* Glassmorphic Dashboard Panel container */
+    #dashboard-panel {
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 28px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+      margin-bottom: 40px;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .dashboard-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 16px;
+    }
+
+    .dashboard-header h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .refresh-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      padding: 8px 16px;
+      border-radius: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+    }
+
+    .refresh-btn:hover {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+    }
+
+    .dashboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 14px;
+    }
+
+    .dashboard-table th {
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      color: var(--text-secondary);
+      padding: 14px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      text-transform: uppercase;
+      font-size: 11px;
+      letter-spacing: 0.8px;
+    }
+
+    .dashboard-table td {
+      padding: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      color: #cbd5e1;
+    }
+
+    .dashboard-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    /* Colored Status Pill Indicators */
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-pill.pending {
+      background: rgba(245, 158, 11, 0.12);
+      color: #fbbf24;
+      border: 1px solid rgba(245, 158, 11, 0.25);
+    }
+
+    .status-pill.in-progress {
+      background: rgba(59, 130, 246, 0.12);
+      color: #60a5fa;
+      border: 1px solid rgba(59, 130, 246, 0.25);
+    }
+
+    .status-pill.completed {
+      background: rgba(16, 185, 129, 0.12);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    /* Modern Dropdown select for transitions */
+    .status-select {
+      background: rgba(20, 30, 54, 0.9);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .status-select:focus {
+      border-color: #c084fc;
+      box-shadow: 0 0 10px rgba(168, 85, 247, 0.15);
+    }
+
     /* Responsive adjustments */
     @media (max-width: 600px) {
       .task-header {
@@ -764,6 +929,13 @@
         <div class="logo-icon">D</div>
         <div class="logo-text">diaspora.ai</div>
       </div>
+      
+      <!-- Operational Navigation Toggles -->
+      <div class="view-toggle-group">
+        <button class="view-btn active" id="view-chat-btn" onclick="setView('chat')">Chat</button>
+        <button class="view-btn" id="view-dashboard-btn" onclick="setView('dashboard')">Dashboard</button>
+      </div>
+
       <div class="tech-stack-badges">
         <span class="tech-badge">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#3ecf8e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
@@ -812,6 +984,35 @@
     <!-- Active Message/Response Stream -->
     <div class="chat-stream" id="chat-stream">
       <!-- Dynamic Chat Cards will render here -->
+    </div>
+
+    <!-- Glassmorphic Dashboard Panel -->
+    <div id="dashboard-panel" style="display: none;">
+      <div class="dashboard-header">
+        <h2>Operational Task Dashboard</h2>
+        <button class="refresh-btn" onclick="fetchDashboardTasks()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"></path></svg>
+          Refresh Data
+        </button>
+      </div>
+      <div class="table-container">
+        <table class="dashboard-table">
+          <thead>
+            <tr>
+              <th>Tracking Code</th>
+              <th>Intent Category</th>
+              <th>Risk Assessment</th>
+              <th>Assigned Department</th>
+              <th>Creation Timestamp</th>
+              <th>Operational Status</th>
+              <th>Action Center</th>
+            </tr>
+          </thead>
+          <tbody id="dashboard-tbody">
+            <!-- Dynamic tabular database rows populate here -->
+          </tbody>
+        </table>
+      </div>
     </div>
 
   </main>
@@ -1171,6 +1372,182 @@
         }, 1500);
       } catch (err) {
         console.error('Failed to copy text:', err);
+      }
+    }
+
+    /**
+     * Switch view between chat interface and operational dashboard
+     */
+    function setView(view) {
+      const chatBtn = document.getElementById('view-chat-btn');
+      const dashboardBtn = document.getElementById('view-dashboard-btn');
+      const welcomePanel = document.getElementById('welcome-panel');
+      const chatStream = document.getElementById('chat-stream');
+      const dashboardPanel = document.getElementById('dashboard-panel');
+      const inputPanel = document.querySelector('.input-panel');
+
+      if (view === 'chat') {
+        chatBtn.classList.add('active');
+        dashboardBtn.classList.remove('active');
+        
+        // Restore welcome screen ONLY if there are no task messages yet
+        if (chatStream && chatStream.children.length === 0) {
+          if (welcomePanel) welcomePanel.style.display = 'block';
+        } else {
+          if (welcomePanel) welcomePanel.style.display = 'none';
+        }
+        
+        if (chatStream) chatStream.style.display = 'block';
+        if (dashboardPanel) dashboardPanel.style.display = 'none';
+        if (inputPanel) inputPanel.style.display = 'block';
+        
+        // Auto scroll to latest card
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      } else if (view === 'dashboard') {
+        chatBtn.classList.remove('active');
+        dashboardBtn.classList.add('active');
+        
+        if (welcomePanel) welcomePanel.style.display = 'none';
+        if (chatStream) chatStream.style.display = 'none';
+        if (dashboardPanel) dashboardPanel.style.display = 'block';
+        if (inputPanel) inputPanel.style.display = 'none';
+        
+        // Load fresh data from backend
+        fetchDashboardTasks();
+      }
+    }
+
+    /**
+     * Fetch all operational tasks from the Express backend API and populate the dashboard table
+     */
+    async function fetchDashboardTasks() {
+      const tbody = document.getElementById('dashboard-tbody');
+      if (!tbody) return;
+
+      // Show initial loading state in the table
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted); font-style: italic;">
+            <div class="loading-spinner" style="margin: 0 auto 12px auto; width: 24px; height: 24px; border-width: 2px;"></div>
+            Fetching live task logs from the backend database...
+          </td>
+        </tr>
+      `;
+
+      try {
+        const response = await fetch('http://localhost:3000/api/tasks');
+        if (!response.ok) {
+          throw new Error(`Server returned HTTP status ${response.status}`);
+        }
+        const tasks = await response.json();
+
+        if (tasks.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" style="text-align: center; padding: 40px; color: var(--text-muted); font-style: italic;">
+                No operational tasks found. Go to the Chat tab and submit a task to see it populated here.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = ''; // Clear loading indicator
+
+        tasks.forEach(task => {
+          const tr = document.createElement('tr');
+          
+          // Format creation time
+          let formattedTime = 'N/A';
+          if (task.created_at) {
+            const dt = new Date(task.created_at);
+            formattedTime = dt.toLocaleDateString() + ' ' + dt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          }
+
+          // Risk color coding/badge logic
+          let riskBadgeColor = 'var(--text-muted)';
+          if (task.risk_score >= 80) {
+            riskBadgeColor = '#f87171'; // Light red
+          } else if (task.risk_score >= 50) {
+            riskBadgeColor = '#fbbf24'; // Yellow
+          } else {
+            riskBadgeColor = '#34d399'; // Emerald
+          }
+
+          // Intent classification mapping icon/pills
+          let intentLabel = task.intent || 'unknown';
+          let intentIcon = '📋';
+          if (intentLabel === 'send_money') { intentIcon = '💸'; intentLabel = 'Send Money'; }
+          else if (intentLabel === 'get_airport_transfer') { intentIcon = '🚖'; intentLabel = 'Airport Transfer'; }
+          else if (intentLabel === 'hire_service') { intentIcon = '🔧'; intentLabel = 'Hire Service'; }
+          else if (intentLabel === 'verify_document') { intentIcon = '🛡️'; intentLabel = 'Verify Document'; }
+          else if (intentLabel === 'check_status') { intentIcon = '🔍'; intentLabel = 'Check Status'; }
+
+          // Status styling classes mapping
+          const statusClass = (task.status || 'Pending').toLowerCase().replace(' ', '-');
+
+          tr.innerHTML = `
+            <td style="font-family: monospace; font-weight: 700; color: #ffffff;">${task.task_code || 'N/A'}</td>
+            <td><span style="display: flex; align-items: center; gap: 6px;"><span>${intentIcon}</span> ${intentLabel}</span></td>
+            <td><span style="color: ${riskBadgeColor}; font-weight: 700;">${task.risk_score || 0}</span> <span style="font-size: 11px; color: var(--text-muted);">/ 100</span></td>
+            <td><span class="tech-badge" style="background: rgba(255, 255, 255, 0.02); display: inline-flex; border: 1px solid rgba(255,255,255,0.04); font-size: 13px; font-weight: 500;">${task.employee_assignment || 'Operations Team'}</span></td>
+            <td style="font-size: 13px; color: var(--text-secondary);">${formattedTime}</td>
+            <td><span class="status-pill ${statusClass}">${task.status || 'Pending'}</span></td>
+            <td>
+              <select class="status-select" onchange="updateTaskStatus('${task.id}', this.value)">
+                <option value="Pending" ${task.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                <option value="In Progress" ${task.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                <option value="Completed" ${task.status === 'Completed' ? 'selected' : ''}>Completed</option>
+              </select>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+      } catch (err) {
+        console.error('Error fetching tasks:', err);
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 40px; color: #f87171;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin: 0 auto 12px auto; display: block;"><polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              Error Loading Tasks: ${err.message}. Ensure the API server is running on http://localhost:3000.
+            </td>
+          </tr>
+        `;
+      }
+    }
+
+    /**
+     * Transition a task's status dynamically in the Supabase database via the PATCH API endpoint
+     */
+    async function updateTaskStatus(taskId, newStatus) {
+      if (!taskId) return;
+
+      try {
+        console.log(`Updating status for task ${taskId} to ${newStatus}`);
+        const response = await fetch(`http://localhost:3000/api/tasks/${taskId}/status`, {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        if (!response.ok) {
+          throw new Error(`Server returned HTTP status ${response.status}`);
+        }
+
+        const updatedTask = await response.json();
+        console.log('Task status updated successfully in Supabase:', updatedTask);
+        
+        // Refresh the table with latest database records
+        fetchDashboardTasks();
+
+      } catch (err) {
+        console.error('Error updating task status:', err);
+        alert(`Failed to update task status in the database: ${err.message}`);
+        // Re-fetch database state to revert select dropdown back to correct db value
+        fetchDashboardTasks();
       }
     }
   </script>

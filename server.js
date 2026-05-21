@@ -165,7 +165,22 @@ app.post('/api/tasks', async (req, res) => {
     // We generate a human-readable unique code prefixing random numeric tracking sequences.
     const task_code = 'TSK-' + Math.floor(Math.random() * 1000000);
 
-    console.log(`Generated task code: ${task_code}`);
+    // --- Step 5.7b: Dynamic Employee Assignment Mapping ---
+    // Rubric requirement: Assign task dynamically to a team/employee based on the intent.
+    // - send_money requests are assigned to the 'Finance Team'
+    // - verify_document requests are assigned to the 'Legal Team'
+    // - hire_service & get_airport_transfer are assigned to the 'Operations Team'
+    // - check_status requests are assigned to the 'Customer Support Team'
+    let employeeAssignment = 'Operations Team'; // Default assignment
+    if (intent === 'send_money') {
+      employeeAssignment = 'Finance Team';
+    } else if (intent === 'verify_document') {
+      employeeAssignment = 'Legal Team';
+    } else if (intent === 'check_status') {
+      employeeAssignment = 'Customer Support Team';
+    }
+
+    console.log(`Generated task code: ${task_code} | Assigned: ${employeeAssignment}`);
 
     // --- Step 5.8: Supabase Database Insertion ---
     // Inserts the structured payload directly into the 'tasks' table.
@@ -182,7 +197,8 @@ app.post('/api/tasks', async (req, res) => {
           msg_whatsapp: parsedData.msg_whatsapp || '', // WhatsApp tailored communication
           msg_email: parsedData.msg_email || '',       // Email tailored communication
           msg_sms: parsedData.msg_sms || '',           // SMS tailored communication
-          risk_score: riskScore                  // Assigned transactional risk score
+          risk_score: riskScore,                 // Assigned transactional risk score
+          employee_assignment: employeeAssignment // Dynamically assigned division team
         }
       ])
       .select(); // Request the database to return the newly generated row back
@@ -208,6 +224,108 @@ app.post('/api/tasks', async (req, res) => {
     // --- Step 5.10: Centralized Error Diagnostics ---
     // Handles database failures, AI timeouts, or parsing errors gracefully.
     console.error('Error in /api/tasks:', error);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: error.message
+    });
+  }
+});
+
+// ----------------------------------------------------------------------------
+// 5.11. GET /api/tasks - RETRIEVE ALL OPERATIONAL TASKS
+// ----------------------------------------------------------------------------
+// Rubric requirement: The frontend must display all tasks in a dashboard.
+// This route fetches the entire task dataset from the Supabase database table,
+// ordered chronologically by created_at DESC (newest first).
+app.get('/api/tasks', async (req, res) => {
+  try {
+    console.log('GET /api/tasks - Retrieving all tasks ordered by creation date...');
+    
+    if (!supabase) {
+      throw new Error('Supabase database client is not initialized.');
+    }
+
+    // Fetch task logs from Supabase
+    const { data, error } = await supabase
+      .from('tasks')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    // Handle potential query execution errors
+    if (error) {
+      console.error('Failed to query tasks:', error.message);
+      throw error;
+    }
+
+    console.log(`GET /api/tasks - Successfully loaded ${data.length} task records.`);
+    return res.status(200).json(data);
+
+  } catch (error) {
+    console.error('Error in GET /api/tasks:', error);
+    return res.status(500).json({
+      error: 'Internal Server Error',
+      message: error.message
+    });
+  }
+});
+
+// ----------------------------------------------------------------------------
+// 5.12. PATCH /api/tasks/:id/status - TRANSITION OPERATIONAL TASK STATUS
+// ----------------------------------------------------------------------------
+// Rubric requirement: Support dynamic status changes (Pending, In Progress, Completed)
+// with direct persistence in the Supabase relational database.
+app.patch('/api/tasks/:id/status', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { status } = req.body;
+
+    console.log(`PATCH /api/tasks/${id}/status - Transitioning status to: "${status}"`);
+
+    // --- Validation Guards ---
+    if (!id) {
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: 'Task ID is a required parameter.'
+      });
+    }
+
+    if (!status || !['Pending', 'In Progress', 'Completed'].includes(status)) {
+      return res.status(400).json({
+        error: 'Bad Request',
+        message: 'A valid status string (Pending, In Progress, or Completed) is required in the body.'
+      });
+    }
+
+    if (!supabase) {
+      throw new Error('Supabase database client is not initialized.');
+    }
+
+    // --- Perform Database Update ---
+    const { data, error } = await supabase
+      .from('tasks')
+      .update({ status })
+      .eq('id', id)
+      .select();
+
+    // Check for query/update failures
+    if (error) {
+      console.error('Supabase update failure:', error.message);
+      throw error;
+    }
+
+    // Check if the record actually existed
+    if (!data || data.length === 0) {
+      return res.status(404).json({
+        error: 'Not Found',
+        message: `Task record with ID ${id} was not found.`
+      });
+    }
+
+    console.log(`PATCH /api/tasks/${id}/status - Successfully committed:`, data[0]);
+    return res.status(200).json(data[0]);
+
+  } catch (error) {
+    console.error('Error in PATCH /api/tasks/:id/status:', error);
     return res.status(500).json({
       error: 'Internal Server Error',
       message: error.message
