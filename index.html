@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Diaspora AI Task Manager</title>
+  
+  <!-- Premium Modern Typography -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Embedded Styling for Visual Excellence -->
+  <style>
+    :root {
+      /* Colors & Gradients */
+      --bg-dark: #090d16;
+      --bg-radial: radial-gradient(circle at 50% 50%, #161e33 0%, #090d16 100%);
+      --card-bg: rgba(17, 24, 39, 0.7);
+      --glass-bg: rgba(25, 35, 58, 0.45);
+      --glass-border: rgba(255, 255, 255, 0.08);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      
+      --gradient-purple: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+      --gradient-emerald: linear-gradient(135deg, #10b981 0%, #059669 100%);
+      --gradient-amber: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      --gradient-rose: linear-gradient(135deg, #f43f5e 0%, #e11d48 100%);
+      --gradient-blue: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+      
+      /* Transitions */
+      --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif;
+      background: var(--bg-radial);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Soft Glow Background Decorations */
+    .glow-sphere {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(0, 0, 0, 0) 70%);
+      top: -100px;
+      right: -100px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .glow-sphere-2 {
+      position: absolute;
+      width: 600px;
+      height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, rgba(0, 0, 0, 0) 70%);
+      bottom: -200px;
+      left: -200px;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Top Navigation Header */
+    header {
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--glass-border);
+      background: rgba(9, 13, 22, 0.8);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 16px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--gradient-purple);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 20px;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.4);
+    }
+
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 22px;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+      background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.2);
+      padding: 6px 12px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #10b981;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: #10b981;
+      box-shadow: 0 0 10px #10b981;
+      animation: pulse 2s infinite;
+    }
+
+    /* Core Main Content Area */
+    main {
+      flex: 1;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 30px 20px 140px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      z-index: 1;
+    }
+
+    /* Welcome / Hero State */
+    .welcome-panel {
+      text-align: center;
+      padding: 40px 20px;
+      animation: fadeIn 0.8s ease;
+    }
+
+    .welcome-panel h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: linear-gradient(to right, #ffffff, #a855f7, #6366f1);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .welcome-panel p {
+      color: var(--text-secondary);
+      font-size: 16px;
+      max-width: 500px;
+      margin: 0 auto;
+      line-height: 1.6;
+    }
+
+    /* Chat Log / Stream Area */
+    .chat-stream {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* User Message Bubble */
+    .chat-message-user {
+      align-self: flex-end;
+      max-width: 80%;
+      background: var(--gradient-purple);
+      color: #ffffff;
+      padding: 16px 20px;
+      border-radius: 20px 20px 4px 20px;
+      font-size: 15px;
+      line-height: 1.5;
+      box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.3);
+      animation: slideInRight 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Shimmering Dynamic Loading Bubble */
+    .loading-bubble {
+      align-self: flex-start;
+      width: 100%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      padding: 24px;
+      border-radius: 20px;
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      animation: pulseShimmer 1.8s infinite ease-in-out;
+    }
+
+    .loading-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .loading-spinner {
+      width: 22px;
+      height: 22px;
+      border: 3px solid rgba(255, 255, 255, 0.1);
+      border-top-color: #a855f7;
+      border-radius: 50%;
+      animation: spin 1s infinite linear;
+    }
+
+    .loading-text {
+      color: var(--text-secondary);
+      font-size: 14px;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    .loading-bar {
+      height: 12px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .loading-bar::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      height: 100%;
+      width: 30%;
+      background: var(--gradient-purple);
+      border-radius: 6px;
+      animation: loadingSlide 1.5s infinite ease-in-out;
+    }
+
+    /* AI Output Card */
+    .task-card {
+      align-self: flex-start;
+      width: 100%;
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 28px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      animation: slideInLeft 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* Task Header (Title, Intent, Risk) */
+    .task-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      padding-bottom: 20px;
+    }
+
+    .task-id-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .task-code-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      letter-spacing: 1px;
+    }
+
+    .task-code-value {
+      font-family: 'Outfit', sans-serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: -0.5px;
+    }
+
+    .task-badges {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge-intent {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .badge-risk {
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* Risk Metrics System */
+    .risk-section {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      padding: 16px;
+      border-radius: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .risk-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .risk-bar-container {
+      height: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .risk-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      transition: width 1s ease-in-out;
+    }
+
+    /* Extracted Entities Grid */
+    .entities-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 16px;
+      font-weight: 600;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .entities-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .entity-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 12px 16px;
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .entity-key {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      color: var(--text-secondary);
+      letter-spacing: 0.5px;
+    }
+
+    .entity-value {
+      font-size: 14px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    /* Generated Action Steps List */
+    .steps-section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .steps-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-item {
+      background: rgba(255, 255, 255, 0.02);
+      border-left: 3px solid #a855f7;
+      padding: 12px 18px;
+      border-radius: 0 12px 12px 0;
+      font-size: 14px;
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .step-number {
+      font-weight: 700;
+      color: #a855f7;
+      background: rgba(168, 85, 247, 0.1);
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
+    }
+
+    /* Tailored Draft Messages (Tab System) */
+    .messages-section {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .tab-bar {
+      display: flex;
+      background: rgba(255, 255, 255, 0.03);
+      padding: 4px;
+      border-radius: 12px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      flex: 1;
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+
+    .tab-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .tab-btn.active {
+      color: #ffffff;
+      background: var(--gradient-purple);
+      box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+    }
+
+    .tab-content {
+      position: relative;
+      background: rgba(0, 0, 0, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 18px;
+      border-radius: 16px;
+      min-height: 100px;
+      font-size: 14px;
+      line-height: 1.6;
+      color: #cbd5e1;
+      white-space: pre-wrap;
+    }
+
+    .copy-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      color: #ffffff;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .copy-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Fixed Input Floating Panel */
+    .input-panel {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(to top, rgba(9, 13, 22, 1) 70%, rgba(9, 13, 22, 0) 100%);
+      padding: 30px 20px 40px;
+      z-index: 5;
+    }
+
+    .input-container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(20, 30, 54, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 8px 12px 8px 20px;
+      backdrop-filter: blur(20px);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5), 0 20px 50px rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: var(--transition-smooth);
+    }
+
+    .input-container:focus-within {
+      border-color: rgba(168, 85, 247, 0.5);
+      box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(168, 85, 247, 0.2);
+    }
+
+    .chat-input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #ffffff;
+      font-size: 15px;
+      font-family: inherit;
+      padding: 12px 0;
+      outline: none;
+    }
+
+    .chat-input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .submit-btn {
+      background: var(--gradient-purple);
+      border: none;
+      color: #ffffff;
+      padding: 12px 24px;
+      border-radius: 14px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: var(--transition-smooth);
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5);
+    }
+
+    .submit-btn:active {
+      transform: translateY(1px);
+    }
+
+    /* Keyframe Animations */
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.2); opacity: 0.6; }
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes slideInRight {
+      from { opacity: 0; transform: translateX(30px) translateY(10px); }
+      to { opacity: 1; transform: translateX(0) translateY(0); }
+    }
+
+    @keyframes slideInLeft {
+      from { opacity: 0; transform: translateX(-30px) translateY(15px); }
+      to { opacity: 1; transform: translateX(0) translateY(0); }
+    }
+
+    @keyframes pulseShimmer {
+      0%, 100% { opacity: 0.9; }
+      50% { opacity: 0.65; }
+    }
+
+    @keyframes loadingSlide {
+      0% { left: -30%; }
+      50% { left: 100%; }
+      100% { left: 100%; }
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .task-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .task-badges {
+        width: 100%;
+        justify-content: space-between;
+      }
+      main {
+        padding-bottom: 160px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Glow Background Spheres -->
+  <div class="glow-sphere"></div>
+  <div class="glow-sphere-2"></div>
+
+  <!-- Header Section -->
+  <header>
+    <div class="nav-container">
+      <div class="logo-area">
+        <div class="logo-icon">D</div>
+        <div class="logo-text">diaspora.ai</div>
+      </div>
+      <div class="status-badge">
+        <div class="status-dot"></div>
+        Express Live
+      </div>
+    </div>
+  </header>
+
+  <!-- Core Content Body -->
+  <main>
+    
+    <!-- Welcome Screen Content -->
+    <div class="welcome-panel" id="welcome-panel">
+      <h1>Diaspora AI Task Manager</h1>
+      <p>Initiate transactions, verify documents, and automate correspondence instantly. Simply enter your instructions below to let Gemini 2.5 Flash structure the task.</p>
+    </div>
+
+    <!-- Active Message/Response Stream -->
+    <div class="chat-stream" id="chat-stream">
+      <!-- Dynamic Chat Cards will render here -->
+    </div>
+
+  </main>
+
+  <!-- Fixed Bottom Ingestion Form -->
+  <div class="input-panel">
+    <form id="task-form" onsubmit="handleTaskSubmit(event)">
+      <div class="input-container">
+        <input 
+          type="text" 
+          id="message-input" 
+          class="chat-input" 
+          placeholder="E.g., Send $500 to my mom in Nairobi for her airport taxi and verify her identity card..." 
+          autocomplete="off"
+          required
+        >
+        <button type="submit" class="submit-btn" id="submit-button">
+          Submit
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Core Script Controller -->
+  <script>
+    // In-memory counter for total processed tasks in current session
+    let taskCounter = 0;
+
+    /**
+     * Handles the task processing submission workflow
+     */
+    async function handleTaskSubmit(event) {
+      event.preventDefault();
+
+      const inputField = document.getElementById('message-input');
+      const submitBtn = document.getElementById('submit-button');
+      const welcomePanel = document.getElementById('welcome-panel');
+      const chatStream = document.getElementById('chat-stream');
+
+      const userMessage = inputField.value.trim();
+      if (!userMessage) return;
+
+      // Disable inputs and submit button during processing to prevent overlapping requests
+      inputField.disabled = true;
+      submitBtn.disabled = true;
+
+      // Hide the initial hero welcome screen if this is the first submission
+      if (welcomePanel) {
+        welcomePanel.style.display = 'none';
+      }
+
+      // 1. Append User Chat Bubble
+      const userBubble = document.createElement('div');
+      userBubble.className = 'chat-message-user';
+      userBubble.textContent = userMessage;
+      chatStream.appendChild(userBubble);
+
+      // Scroll smoothly to bottom
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+      // 2. Append Custom Shimmering Loading Bubble
+      const loadingBubbleId = 'loading-' + Date.now();
+      const loadingBubble = document.createElement('div');
+      loadingBubble.className = 'loading-bubble';
+      loadingBubble.id = loadingBubbleId;
+      loadingBubble.innerHTML = `
+        <div class="loading-header">
+          <div class="loading-spinner"></div>
+          <span class="loading-text">Gemini 2.5 Flash is extracting task entities...</span>
+        </div>
+        <div class="loading-bar"></div>
+      `;
+      chatStream.appendChild(loadingBubble);
+      
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+      // Reset the text field immediately for a fluid experience
+      inputField.value = '';
+
+      try {
+        // 3. Make HTTP Fetch API POST Call to Express Backend
+        const response = await fetch('http://localhost:3000/api/tasks', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ message: userMessage })
+        });
+
+        // Handle parsing and throw error on bad response
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.message || `Server responded with status code ${response.status}`);
+        }
+
+        const taskData = await response.json();
+        
+        // 4. Remove loading indicator and mount beautiful task card
+        const loadingElement = document.getElementById(loadingBubbleId);
+        if (loadingElement) {
+          loadingElement.remove();
+        }
+
+        // Render completed structured response card
+        renderTaskCard(taskData, chatStream);
+
+      } catch (err) {
+        console.error('Task submission error:', err);
+        
+        // Remove loading state on failure
+        const loadingElement = document.getElementById(loadingBubbleId);
+        if (loadingElement) {
+          loadingElement.remove();
+        }
+
+        // Create alert box to notify the user gracefully
+        alert(`Failed to process task: ${err.message}. Please verify that the Express backend server is running on port 3000.`);
+      } finally {
+        // Re-enable inputs for subsequent tasks
+        inputField.disabled = false;
+        submitBtn.disabled = false;
+        inputField.focus();
+      }
+    }
+
+    /**
+     * Renders a highly visual task extraction card containing all parsed entities, steps and drafts.
+     */
+    function renderTaskCard(task, container) {
+      taskCounter++;
+      
+      const card = document.createElement('div');
+      card.className = 'task-card';
+      
+      // Determine theme/styling presets based on the assigned Risk Score
+      let riskClass = '';
+      let riskLabel = '';
+      let riskGrad = '';
+      
+      if (task.risk_score >= 75) {
+        riskClass = 'rgba(244, 63, 94, 0.15)';
+        riskLabel = 'CRITICAL / HIGH RISK';
+        riskGrad = 'var(--gradient-rose)';
+      } else if (task.risk_score >= 50) {
+        riskClass = 'rgba(245, 158, 11, 0.15)';
+        riskLabel = 'AUDIT / MEDIUM RISK';
+        riskGrad = 'var(--gradient-amber)';
+      } else if (task.risk_score >= 25) {
+        riskClass = 'rgba(59, 130, 246, 0.15)';
+        riskLabel = 'STANDARD / LOW RISK';
+        riskGrad = 'var(--gradient-blue)';
+      } else {
+        riskClass = 'rgba(16, 185, 129, 0.15)';
+        riskLabel = 'SECURE / MINIMAL RISK';
+        riskGrad = 'var(--gradient-emerald)';
+      }
+
+      // Generate unique IDs for the dynamic message tabs
+      const uniqueId = task.task_code || 'TSK-' + Math.floor(Math.random() * 100000);
+      const tabWaId = `tab-wa-${uniqueId}`;
+      const tabEmailId = `tab-email-${uniqueId}`;
+      const tabSmsId = `tab-sms-${uniqueId}`;
+      const contentId = `content-${uniqueId}`;
+
+      // Assemble structured components inside the card
+      card.innerHTML = `
+        <!-- Task Identification Header -->
+        <div class="task-header">
+          <div class="task-id-group">
+            <span class="task-code-label">Structured Record</span>
+            <span class="task-code-value">${task.task_code}</span>
+          </div>
+          <div class="task-badges">
+            <span class="badge-intent" style="background: rgba(168, 85, 247, 0.15); border: 1px solid rgba(168, 85, 247, 0.25); color: #c084fc;">
+              ${task.intent.replace('_', ' ')}
+            </span>
+            <span class="badge-risk" style="background: ${riskClass}; color: #ffffff; border: 1px solid ${riskGrad}; border-image: none;">
+              Risk: ${task.risk_score}/100
+            </span>
+          </div>
+        </div>
+
+        <!-- Risk Assessment Scorebar -->
+        <div class="risk-section">
+          <div class="risk-meta">
+            <span style="color: var(--text-secondary);">Compliance Status</span>
+            <span style="color: #ffffff;">${riskLabel}</span>
+          </div>
+          <div class="risk-bar-container">
+            <div class="risk-bar-fill" style="width: ${task.risk_score}%; background: ${riskGrad};"></div>
+          </div>
+        </div>
+
+        <!-- Extracted Entities Subcard -->
+        <div class="entities-section">
+          <div class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
+            Parsed Task Entities
+          </div>
+          <div class="entities-grid" id="entities-grid-${uniqueId}">
+            <!-- Extracted properties will populate here -->
+          </div>
+        </div>
+
+        <!-- AI Action Workflow Steps -->
+        <div class="steps-section">
+          <div class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"></polyline><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Operational Steps Required
+          </div>
+          <ul class="steps-list" id="steps-list-${uniqueId}">
+            <!-- action items will populate here -->
+          </ul>
+        </div>
+
+        <!-- Tailored Correspondence Drafts -->
+        <div class="messages-section">
+          <div class="section-title">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#a855f7" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            Tailored Communication Drafts
+          </div>
+          
+          <!-- Tab Navigation Controls -->
+          <div class="tab-bar">
+            <button class="tab-btn active" id="${tabWaId}" onclick="switchMessageTab('${uniqueId}', 'wa')">WhatsApp</button>
+            <button class="tab-btn" id="${tabEmailId}" onclick="switchMessageTab('${uniqueId}', 'email')">Email</button>
+            <button class="tab-btn" id="${tabSmsId}" onclick="switchMessageTab('${uniqueId}', 'sms')">SMS</button>
+          </div>
+          
+          <!-- Dynamic Message Frame -->
+          <div class="tab-content">
+            <button class="copy-btn" onclick="copyTabContent('${uniqueId}')">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+              Copy Text
+            </button>
+            <div id="${contentId}"></div>
+          </div>
+        </div>
+      `;
+
+      container.appendChild(card);
+
+      // --- Inline Render Entities Grid ---
+      const entitiesGrid = card.querySelector(`#entities-grid-${uniqueId}`);
+      const entities = task.entities || {};
+      const entityKeys = Object.keys(entities);
+      
+      if (entityKeys.length > 0) {
+        entityKeys.forEach(key => {
+          const item = document.createElement('div');
+          item.className = 'entity-item';
+          item.innerHTML = `
+            <span class="entity-key">${key}</span>
+            <span class="entity-value">${entities[key]}</span>
+          `;
+          entitiesGrid.appendChild(item);
+        });
+      } else {
+        entitiesGrid.innerHTML = `
+          <div style="grid-column: 1 / -1; color: var(--text-muted); font-size: 13px; font-style: italic; padding: 4px;">
+            No entities extracted.
+          </div>
+        `;
+      }
+
+      // --- Inline Render action Steps ---
+      const stepsList = card.querySelector(`#steps-list-${uniqueId}`);
+      const steps = task.generated_steps || [];
+      
+      if (steps.length > 0) {
+        steps.forEach((step, idx) => {
+          const li = document.createElement('li');
+          li.className = 'step-item';
+          li.innerHTML = `
+            <div class="step-number">${idx + 1}</div>
+            <div style="align-self: center;">${step}</div>
+          `;
+          stepsList.appendChild(li);
+        });
+      } else {
+        stepsList.innerHTML = `<li class="step-item" style="color: var(--text-muted); font-style: italic;">No operational steps specified.</li>`;
+      }
+
+      // Keep references to raw string communications for tab controls
+      card.dataset.msgWa = task.msg_whatsapp || '';
+      card.dataset.msgEmail = task.msg_email || '';
+      card.dataset.msgSms = task.msg_sms || '';
+
+      // Initialize default active content box (WhatsApp)
+      card.querySelector(`#${contentId}`).textContent = task.msg_whatsapp || '(No WhatsApp draft generated)';
+
+      // Auto scroll to latest card
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    /**
+     * Switches tabs within a given task message card
+     */
+    function switchMessageTab(taskUniqueId, channel) {
+      // Find the card container
+      const cards = document.querySelectorAll('.task-card');
+      let targetCard = null;
+      for (const c of cards) {
+        if (c.querySelector(`.tab-content`).querySelector(`.copy-btn`).getAttribute('onclick').includes(taskUniqueId)) {
+          targetCard = c;
+          break;
+        }
+      }
+
+      if (!targetCard) return;
+
+      // Update button highlights
+      targetCard.querySelector(`#tab-wa-${taskUniqueId}`).className = 'tab-btn' + (channel === 'wa' ? ' active' : '');
+      targetCard.querySelector(`#tab-email-${taskUniqueId}`).className = 'tab-btn' + (channel === 'email' ? ' active' : '');
+      targetCard.querySelector(`#tab-sms-${taskUniqueId}`).className = 'tab-btn' + (channel === 'sms' ? ' active' : '');
+
+      // Update text block matching the targeted channel
+      const contentDiv = targetCard.querySelector(`#content-${taskUniqueId}`);
+      if (channel === 'wa') {
+        contentDiv.textContent = targetCard.dataset.msgWa || '(No WhatsApp draft generated)';
+      } else if (channel === 'email') {
+        contentDiv.textContent = targetCard.dataset.msgEmail || '(No Email draft generated)';
+      } else if (channel === 'sms') {
+        contentDiv.textContent = targetCard.dataset.msgSms || '(No SMS draft generated)';
+      }
+    }
+
+    /**
+     * Utility to copy active message content to user keyboard clipboard
+     */
+    async function copyTabContent(taskUniqueId) {
+      const contentText = document.getElementById(`content-${taskUniqueId}`).textContent;
+      try {
+        await navigator.clipboard.writeText(contentText);
+        
+        // Briefly animate the copy button for micro-feedback
+        const btn = document.getElementById(`content-${taskUniqueId}`).parentNode.querySelector('.copy-btn');
+        const oldHtml = btn.innerHTML;
+        btn.innerHTML = `
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+          <span style="color: #10b981;">Copied!</span>
+        `;
+        setTimeout(() => {
+          btn.innerHTML = oldHtml;
+        }, 1500);
+      } catch (err) {
+        console.error('Failed to copy text:', err);
+      }
+    }
+  </script>
+</body>
+</html>
