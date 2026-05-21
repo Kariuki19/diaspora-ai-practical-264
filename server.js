@@ -336,10 +336,4 @@ app.patch('/api/tasks/:id/status', async (req, res) => {
 // ----------------------------------------------------------------------------
 // 6. SERVER BOOTSTRAP
 // ----------------------------------------------------------------------------
-app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🚀 Server is running in active mode on port ${PORT}`);
-  console.log(`👉 Health check: http://localhost:${PORT}/health`);
-  console.log(`👉 POST tasks API: http://localhost:${PORT}/api/tasks`);
-  console.log(`====================================================`);
-});
+app.listen(PORT, () => { console.log('Server is running on port ' + PORT); });
