@@ -17,6 +17,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -331,6 +332,11 @@ app.patch('/api/tasks/:id/status', async (req, res) => {
       message: error.message
     });
   }
+});
+
+// Serve frontend client in production
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 // ----------------------------------------------------------------------------
