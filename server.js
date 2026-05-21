@@ -15,9 +15,9 @@
  */
 
 require('dotenv').config();
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
 const { createClient } = require('@supabase/supabase-js');
 const { GoogleGenerativeAI } = require('@google/generative-ai');
 
@@ -334,12 +334,9 @@ app.patch('/api/tasks/:id/status', async (req, res) => {
   }
 });
 
-// Serve frontend client in production
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
-});
-
 // ----------------------------------------------------------------------------
 // 6. SERVER BOOTSTRAP
 // ----------------------------------------------------------------------------
+app.get('/', (req, res) => { res.sendFile(path.join(__dirname, 'index.html')); });
+
 app.listen(PORT, () => { console.log('Server is running on port ' + PORT); });
