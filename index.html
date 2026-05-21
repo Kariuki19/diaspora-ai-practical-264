@@ -1106,7 +1106,7 @@
 
       try {
         // 3. Make HTTP Fetch API POST Call to Express Backend
-        const response = await fetch('http://localhost:3000/api/tasks', {
+        const response = await fetch('http://127.0.0.1:3000/api/tasks', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -1435,7 +1435,7 @@
       `;
 
       try {
-        const response = await fetch('http://localhost:3000/api/tasks');
+        const response = await fetch('http://127.0.0.1:3000/api/tasks');
         if (!response.ok) {
           throw new Error(`Server returned HTTP status ${response.status}`);
         }
@@ -1525,7 +1525,7 @@
 
       try {
         console.log(`Updating status for task ${taskId} to ${newStatus}`);
-        const response = await fetch(`http://localhost:3000/api/tasks/${taskId}/status`, {
+        const response = await fetch(`http://127.0.0.1:3000/api/tasks/${taskId}/status`, {
           method: 'PATCH',
           headers: {
             'Content-Type': 'application/json'
